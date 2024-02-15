@@ -1,4 +1,4 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   firstname VARCHAR(46) NOT NULL,
   lastname VARCHAR(46),
@@ -8,7 +8,7 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE nourrain (
+CREATE TABLE IF NOT EXISTS  nourrain (
   id SERIAL PRIMARY KEY,
   name VARCHAR(62) NOT NULL,
   description TEXT,
@@ -18,7 +18,7 @@ CREATE TABLE nourrain (
   FOREIGN KEY (owner_id) REFERENCES users (id) ON UPDATE CASCADE
 );
 
-CREATE TABLE donations (
+CREATE TABLE IF NOT EXISTS  donations (
   user_id INTEGER,
   nourrain_id INTEGER,
   amount FLOAT NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE donations (
   FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE 
 );
 
-CREATE TABLE nourrains_users (
+CREATE TABLE IF NOT EXISTS nourrains_users (
   user_id INTEGER,
   nourrain_id INTEGER,
   collect_vote BOOLEAN DEFAULT false,
@@ -38,7 +38,7 @@ CREATE TABLE nourrains_users (
   FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE join_query (
+CREATE TABLE IF NOT EXISTS join_query (
   user_id INTEGER,
   nourrain_id INTEGER,
   date TIMESTAMP,
@@ -47,7 +47,7 @@ CREATE TABLE join_query (
   FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE companies (
+CREATE TABLE IF NOT EXISTS companies (
     id SERIAL PRIMARY KEY,
     location POINT,
     name VARCHAR(62) NOT NULL

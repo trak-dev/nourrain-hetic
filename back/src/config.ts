@@ -7,7 +7,9 @@ const config = {
         name : process.env.POSTGRES_DB || '',
         password : process.env.POSTGRES_PASSWORD || '',
         port : parseInt( process.env.POSTGRES_PORT! ) || 5432,
+        sslEnabled : process.env.POSTGRES_SSL_ENABLED === 'true'
     },
+    host : process.env.HOST,
     port : parseInt( process.env.PORT! ) || 8080,
     jwtSecret : process.env.JWT_SECRET || '',
 }
