@@ -22,7 +22,19 @@ const dbSslEnabled = config.database.sslEnabled;
 const host = config.host;
 const port = config.port;
 
+const dbSsl = {
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    },
+    keepAlive: true
+  }
+};
+
 const sequelize = new Sequelize({
+  ...(dbSslEnabled && dbSsl),
   database,
   username: dbuser,
   password: password,
@@ -31,14 +43,6 @@ const sequelize = new Sequelize({
   dialect: 'postgres',
   define: {
     timestamps: false,
-  },
-  ssl: true,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    },
-    keepAlive: true
   }
 });
 
@@ -101,6 +105,7 @@ router.listen({ port, host }, async (err, address) => {
     initNourrainsUsers(sequelize);
     initJoinQuery(sequelize);
     initCompanies(sequelize);
+    console.log("Database migration done.");
   } catch (error) {
     console.error(error);
   }
