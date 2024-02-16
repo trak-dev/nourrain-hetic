@@ -14,19 +14,36 @@ import { initCompanies } from './models/companies.model';
 
 
 const dbuser = config.database.user;
-const host = config.database.host;
+const dbHost = config.database.host;
 const database = config.database.name;
 const password = config.database.password;
 const portdb = config.database.port;
+const dbSslEnabled = config.database.sslEnabled;
+const host = config.host;
 const port = config.port;
 
-const sequelize = new Sequelize(database, dbuser, password, {
-  host,
+const dbSsl = {
+  ssl: true,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    },
+    keepAlive: true
+  }
+};
+
+const sequelize = new Sequelize({
+  ...(dbSslEnabled && dbSsl),
+  database,
+  username: dbuser,
+  password: password,
+  host: dbHost,
   port: portdb,
   dialect: 'postgres',
   define: {
     timestamps: false,
-  },
+  }
 });
 
 const routesWithoutAuth = ["/users/login", "/users/register"];
@@ -69,7 +86,7 @@ router.addHook('onRequest', async (request, reply) => {
 router.register(require('./routes/users.routes'), { prefix: '/users' });
 
 // start the server
-router.listen({ port }, async (err, address) => {
+router.listen({ port, host }, async (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
@@ -88,7 +105,8 @@ router.listen({ port }, async (err, address) => {
     initNourrainsUsers(sequelize);
     initJoinQuery(sequelize);
     initCompanies(sequelize);
+    console.log("Database migration done.");
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    console.error(error);
   }
 });
