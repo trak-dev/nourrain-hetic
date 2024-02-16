@@ -12,6 +12,7 @@ const config = {
     host : process.env.HOST,
     port : parseInt( process.env.PORT! ) || 8080,
     jwtSecret : process.env.JWT_SECRET || '',
+    stripePrivateKey: process.env.STRIPE_PRIVATE_KEY,
 }
 
 export default config;

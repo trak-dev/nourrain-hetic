@@ -11,6 +11,8 @@ import { initDonation } from './models/donations.model';
 import { initNourrainsUsers } from './models/nourrains_users.model';
 import { initJoinQuery } from './models/join_queries.model';
 import { initCompanies } from './models/companies.model';
+import { initGuirkPricing } from "./models/guirk_pricing.model";
+import { initGuirkPurchase } from "./models/guirk_purchase.model";
 
 
 const dbuser = config.database.user;
@@ -82,8 +84,8 @@ router.addHook('onRequest', async (request, reply) => {
   });
 
 // register the routes
-
 router.register(require('./routes/users.routes'), { prefix: '/users' });
+router.register(require('./routes/guirk.routes'), { prefix: '/guirk' });
 
 // start the server
 router.listen({ port, host }, async (err, address) => {
@@ -104,8 +106,10 @@ router.listen({ port, host }, async (err, address) => {
     initDonation(sequelize);
     initNourrainsUsers(sequelize);
     initJoinQuery(sequelize);
+    initGuirkPricing(sequelize);
+    initGuirkPurchase(sequelize);
     initCompanies(sequelize);
-    console.log("Database migration done.");
+    console.log("Database initialization done.");
   } catch (error) {
     console.error(error);
   }
