@@ -11,6 +11,8 @@ import { initDonation } from './models/donations.model';
 import { initNourrainsUsers } from './models/nourrains_users.model';
 import { initJoinQuery } from './models/join_queries.model';
 import { initCompanies } from './models/companies.model';
+import { initGuirkPricing } from "./models/guirk_pricing.model";
+import { initGuirkPurchase } from "./models/guirk_purchase.model";
 
 
 const dbuser = config.database.user;
@@ -46,10 +48,18 @@ const sequelize = new Sequelize({
   }
 });
 
-const routesWithoutAuth = ["/users/login", "/users/register"];
+const routesWithoutAuth = ["/users/login", "/users/register", "/guirk/stripe-webhook"];
 
 const router = fastify({
   // logger: true
+});
+router.register(import('fastify-raw-body'), {
+  field: 'rawBody', // change the default request.rawBody property name
+  global: false, // add the rawBody to every request. **Default true**
+  encoding: 'utf8', // set it to false to set rawBody as a Buffer **Default utf8**
+  runFirst: true, // get the body before any preParsing hook change/uncompress it. **Default false**
+  routes: [], // array of routes, **`global`** will be ignored, wildcard routes not supported
+  jsonContentTypes: [], // array of content-types to handle as JSON. **Default ['application/json']**
 });
 
 router.register(cors, {
@@ -82,8 +92,8 @@ router.addHook('onRequest', async (request, reply) => {
   });
 
 // register the routes
-
 router.register(require('./routes/users.routes'), { prefix: '/users' });
+router.register(require('./routes/guirk.routes'), { prefix: '/guirk' });
 
 // start the server
 router.listen({ port, host }, async (err, address) => {
@@ -104,8 +114,10 @@ router.listen({ port, host }, async (err, address) => {
     initDonation(sequelize);
     initNourrainsUsers(sequelize);
     initJoinQuery(sequelize);
+    initGuirkPricing(sequelize);
+    initGuirkPurchase(sequelize);
     initCompanies(sequelize);
-    console.log("Database migration done.");
+    console.log("Database initialization done.");
   } catch (error) {
     console.error(error);
   }
