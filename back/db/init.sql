@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS guirk_purchase (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     guirk_id INTEGER NOT NULL,
+    stripe_id TEXT NOT NULL UNIQUE,
+    is_handled BOOLEAN NOT NULL DEFAULT false,
     date TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE NO ACTION,
     FOREIGN KEY (guirk_id) REFERENCES guirk_pricing (id) ON UPDATE CASCADE ON DELETE NO ACTION

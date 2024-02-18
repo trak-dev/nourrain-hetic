@@ -13,6 +13,7 @@ const config = {
     port : parseInt( process.env.PORT! ) || 8080,
     jwtSecret : process.env.JWT_SECRET || '',
     stripePrivateKey: process.env.STRIPE_PRIVATE_KEY,
+    stripeSecretWebhook: String(process.env.STRIPE_SECRET_WEBHOOK),
 }
 
 export default config;

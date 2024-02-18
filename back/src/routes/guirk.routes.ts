@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest } from "fastify";
+import { FastifyInstance } from "fastify";
 import Guirk_Class from "../classes/guirk";
 import { createCheckoutInterfaceSchema } from "../validators/guirk";
 
@@ -18,11 +18,25 @@ async function guirkRoutes(router: FastifyInstance) {
       console.log("Handling guirkRoutes /create-checkout");
       try {
         const { id } = createCheckoutInterfaceSchema.parse(req.body);
-        const clientSecret = await Guirk_Class.createCheckout(id);
+        const clientSecret = await Guirk_Class.createCheckout(id, req.headers.authorization!);
         reply.status(200).send({ client_secret: clientSecret });
       } catch (error) {
         console.error(error);
         reply.status(500).send(error);
+      }
+    });
+
+    router.post("/stripe-webhook", {
+      config: { rawBody: true },
+      async handler (req, reply) {
+        console.log("Handling guirkRoutes /stripe-webhook");
+        try {
+          await Guirk_Class.handleStripeWebhook(req);
+          reply.status(201).send();
+        } catch (error) {
+          console.error(error);
+          reply.status(500).send();
+        }
       }
     });
 }
