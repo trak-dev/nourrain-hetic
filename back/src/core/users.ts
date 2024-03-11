@@ -1,8 +1,9 @@
-import { User, initUser } from '../models/user.model';
+import { User } from '../models/user.model';
 import { RegisterUserInput } from '../validators/user';
 import bcrypt from 'bcrypt';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
+import { QueryTypes } from "sequelize";
 
 export default class User_Core {
     
@@ -33,8 +34,7 @@ export default class User_Core {
             const valid = await bcrypt.compare(password, user.password);
             if (!valid) throw "Mot de passe incorrect";
             user.password = "";
-            const token = await jwt.sign({ user }, config.jwtSecret, { expiresIn: '1h' });
-            return token;
+            return jwt.sign({user}, config.jwtSecret, {expiresIn: '1h'});
         } catch (error) {
             console.error(error);
             if (typeof error === 'string') throw error;
@@ -53,5 +53,30 @@ export default class User_Core {
             console.error(error);
             throw "invalid token";
         }
+    }
+
+    static async decrementOneById(userId: number): Promise<void> {
+        User.sequelize?.query(`
+          UPDATE users
+          SET wallet = wallet - 1
+          WHERE id = :userId
+          `,
+        {
+          replacements: { userId },
+          type: QueryTypes.SELECT
+        });
+    }
+
+    static async getAllByNourrainId(nourrainId: number): Promise<User[] | undefined> {
+        return User.sequelize?.query(`
+          SELECT u.id, u.firstname, u.lastname
+          FROM nourrains_users nu
+              INNER JOIN users u ON nu.user_id = u.id
+          WHERE nu.nourrain_id = :nourrainId
+          `,
+        {
+          replacements: { nourrainId },
+          type: QueryTypes.SELECT
+        });
     }
 }
