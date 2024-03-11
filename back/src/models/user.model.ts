@@ -1,4 +1,6 @@
 // User Interface
+import { NourrainsUsers } from "./nourrains_users.model";
+
 interface UserAttributes {
   id: number;
   firstname: string;
@@ -13,6 +15,7 @@ interface UserCreationAttributes extends Optional<UserAttributes, "id" | "lastna
 
 // Sequelize User Model
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
+import { Nourrain } from "./nourrain.model";
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   public id!: number;

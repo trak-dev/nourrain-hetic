@@ -1,4 +1,6 @@
 // Nourrain Interface
+import { User } from "./user.model";
+
 interface NourrainAttributes {
     id: number;
     name: string;
@@ -12,6 +14,7 @@ interface NourrainAttributes {
   
   // Sequelize Nourrain Model
   import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
+import { NourrainsUsers } from "./nourrains_users.model";
   
   export class Nourrain extends Model<NourrainAttributes, NourrainCreationAttributes> implements NourrainAttributes {
     public id!: number;
@@ -59,4 +62,3 @@ interface NourrainAttributes {
       }
     );
   };
-  

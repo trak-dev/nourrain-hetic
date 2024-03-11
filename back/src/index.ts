@@ -94,6 +94,7 @@ router.addHook('onRequest', async (request, reply) => {
 // register the routes
 router.register(require('./routes/users.routes'), { prefix: '/users' });
 router.register(require('./routes/guirk.routes'), { prefix: '/guirk' });
+router.register(require('./routes/nourrain.routes'), { prefix: '/nourrain' });
 
 // start the server
 router.listen({ port, host }, async (err, address) => {

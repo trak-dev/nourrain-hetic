@@ -8,6 +8,9 @@ CREATE TABLE IF NOT EXISTS users (
   wallet FLOAT NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO users (id, firstname, lastname, email, password, wallet) VALUES
+  (1, 'Ilies', 'AAARRRR', 'ilies-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 30),
+  (2, 'Yann', 'UUUUU', 'yann-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 40);
 
 DROP TABLE IF EXISTS nourrain CASCADE;
 CREATE TABLE IF NOT EXISTS nourrain (
@@ -19,7 +22,9 @@ CREATE TABLE IF NOT EXISTS nourrain (
   wallet FLOAT NOT NULL DEFAULT 0,
   FOREIGN KEY (owner_id) REFERENCES users (id) ON UPDATE CASCADE
 );
-
+INSERT INTO nourrain (name, description, owner_id, wallet) VALUES
+  ('Team Ilies', 'This is a lorem ipsum dolor sit amet', 1, 32),
+  ('Team Yann', 'Le nourrain incroyable de TEAM YANN', 2, 0);
 
 DROP TABLE IF EXISTS donations CASCADE;
 CREATE TABLE IF NOT EXISTS donations (
@@ -42,6 +47,10 @@ CREATE TABLE IF NOT EXISTS nourrains_users (
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+INSERT INTO nourrains_users (nourrain_id, user_id) VALUES
+  (1, 1),
+  (1, 2),
+  (2, 2);
 
 DROP TABLE IF EXISTS join_query CASCADE;
 CREATE TABLE IF NOT EXISTS join_query (
@@ -83,3 +92,7 @@ CREATE TABLE IF NOT EXISTS companies (
     location POINT,
     name VARCHAR(62) NOT NULL
 );
+INSERT INTO companies (location, name) VALUES
+  ('(48.851502, 2.4181134)', 'Lolo Cuisine Mésopotamienne et Anatolienne'),
+  ('(48.8509177, 2.4182935)', 'Birdie’s Cafe'),
+  ('(48.8526531, 2.4204547)', 'Le Soleil de Provence');
