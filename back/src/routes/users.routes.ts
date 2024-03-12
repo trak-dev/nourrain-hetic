@@ -19,21 +19,21 @@ async function userRoutes(router: FastifyInstance) {
       console.log("Handling userRoutes /login");
         try {
             const { email, password } = loginInterfaceSchema.parse(req.body);
-            const userTokenAndId = await User_Classe.login(email, password);
-            reply.status(200).send(userTokenAndId);
+            const userToken = await User_Classe.login(email, password);
+            reply.status(200).send(userToken);
         } catch (error) {
             console.error(error);
             reply.status(500).send(error);
         }
     });
 
-    router.get("/isUserConnected", async (req, reply) => {
-      console.log("Handling userRoutes /isUserConnected");
+    router.get("/me", async (req, reply) => {
+      console.log("Handling userRoutes /me");
         try {
-            const logged = await User_Classe.isUserLoggedIn(
+            const me = await User_Classe.me(
                 req.headers.authorization!
             );
-            reply.status(200).send({ logged });
+            reply.status(200).send(me);
         } catch (error) {
             console.error(error);
             reply.status(500).send(error);

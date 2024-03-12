@@ -10,7 +10,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 INSERT INTO users (id, firstname, lastname, email, password, wallet) VALUES
   (1, 'Ilies', 'AAARRRR', 'ilies-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 30),
-  (2, 'Yann', 'UUUUU', 'yann-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 40);
+  (2, 'Yann', 'UUUUU', 'yann-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 40),
+  (3, 'Dorian', 'EEEEE', 'dorian-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 0),
+  (4, 'Djibril', 'ZZZZZ', 'djibril-testttt@yopmail.com', '$2b$10$cqFUpksLhwmAqjICekIK1un0PbWPoiDqiqoPoApXCTVTFS.l1SVve', 0);
 
 DROP TABLE IF EXISTS nourrain CASCADE;
 CREATE TABLE IF NOT EXISTS nourrain (
@@ -20,11 +22,12 @@ CREATE TABLE IF NOT EXISTS nourrain (
   owner_id INTEGER,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   wallet FLOAT NOT NULL DEFAULT 0,
+  code VARCHAR (6) NOT NULL UNIQUE,
   FOREIGN KEY (owner_id) REFERENCES users (id) ON UPDATE CASCADE
 );
-INSERT INTO nourrain (name, description, owner_id, wallet) VALUES
-  ('Team Ilies', 'This is a lorem ipsum dolor sit amet', 1, 32),
-  ('Team Yann', 'Le nourrain incroyable de TEAM YANN', 2, 0);
+INSERT INTO nourrain (name, description, owner_id, wallet, code) VALUES
+  ('Team Ilies', 'This is a lorem ipsum dolor sit amet', 1, 32, '866043'),
+  ('Team Yann', 'Le nourrain incroyable de TEAM YANN', 2, 0, '325856');
 
 DROP TABLE IF EXISTS donations CASCADE;
 CREATE TABLE IF NOT EXISTS donations (
@@ -35,22 +38,24 @@ CREATE TABLE IF NOT EXISTS donations (
   date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (user_id, date),
   FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE,
-  FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE 
+  FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS nourrains_users CASCADE;
 CREATE TABLE IF NOT EXISTS nourrains_users (
   user_id INTEGER,
   nourrain_id INTEGER,
+  waiting BOOLEAN NOT NULL DEFAULT true,
   collect_vote BOOLEAN DEFAULT false,
   PRIMARY KEY (user_id, nourrain_id),
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (nourrain_id) REFERENCES nourrain (id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-INSERT INTO nourrains_users (nourrain_id, user_id) VALUES
-  (1, 1),
-  (1, 2),
-  (2, 2);
+INSERT INTO nourrains_users (nourrain_id, user_id, waiting) VALUES
+  (1, 1, false),
+  (1, 2, false),
+  (2, 2, false),
+  (1, 3, true);
 
 DROP TABLE IF EXISTS join_query CASCADE;
 CREATE TABLE IF NOT EXISTS join_query (

@@ -2,6 +2,8 @@ import Nourrain_Core from "../core/nourrain";
 import User_Core from "../core/users";
 import { DetailedNourrainDto } from "../dto/detailed-nourrain";
 import { User } from "../models/user.model";
+import { Nourrain } from "../models/nourrain.model";
+import { RandomUtils } from "../utils/random.utils";
 
 export default class Nourrain_Class {
 
@@ -20,13 +22,16 @@ export default class Nourrain_Class {
         throw "Owner not found";
       }
 
-      // if user is owner, retrieve all members
-      let members: User[] | undefined = undefined;
+      // if user is owner, retrieve members
+      let userIsOwner = false;
+      let members, waitingMembers: User[] | undefined = undefined;
       if(owner.id === user.id) {
-        members = await User_Core.getAllByNourrainId(nourrain.id);
+        userIsOwner = true;
+        members = await User_Core.getAllByNourrainId(nourrain.id, false);
+        waitingMembers = await User_Core.getAllByNourrainId(nourrain.id, true);
       }
 
-      return new DetailedNourrainDto(nourrains[0], owner.firstname, owner.lastname, members);
+      return new DetailedNourrainDto(nourrains[0], userIsOwner, owner.firstname, owner.lastname, members, waitingMembers);
     } catch (error) {
       console.error(error);
       throw error;
@@ -58,5 +63,33 @@ export default class Nourrain_Class {
       throw "Invalid 'id' param";
     }
     return parsedNourrainId
+  }
+
+  static async createOne(name: string, description: string, token: string): Promise<void> {
+    try {
+      const user = await User_Core.getByToken(token);
+      const nourrainCode = RandomUtils.generateNourrainCode();
+      await Nourrain_Core.createOne(name, description, user.id, nourrainCode);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  static async join(code: string, token: string): Promise<void> {
+    try {
+      const user = await User_Core.getByToken(token);
+
+      // find nourrain
+      const nourrain = await Nourrain.findOne({where: {code}});
+      if(!nourrain) {
+        throw "Nourrain not found";
+      }
+
+      await Nourrain_Core.join(nourrain.id, user.id);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   }
 }
