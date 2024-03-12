@@ -67,15 +67,15 @@ export default class User_Core {
         });
     }
 
-    static async getAllByNourrainId(nourrainId: number): Promise<User[] | undefined> {
+    static async getAllByNourrainId(nourrainId: number, waiting: boolean): Promise<User[] | undefined> {
         return User.sequelize?.query(`
           SELECT u.id, u.firstname, u.lastname
           FROM nourrains_users nu
               INNER JOIN users u ON nu.user_id = u.id
-          WHERE nu.nourrain_id = :nourrainId
+          WHERE nu.nourrain_id = :nourrainId AND nu.waiting = :waiting
           `,
         {
-          replacements: { nourrainId },
+          replacements: { nourrainId, waiting },
           type: QueryTypes.SELECT
         });
     }

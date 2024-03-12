@@ -46,4 +46,24 @@ export default class Nourrain_Core {
       type: QueryTypes.SELECT
     });
   }
+
+  static async createOne(name: string, description: string, userId: number, nourrainCode: string): Promise<void> {
+    Nourrain.sequelize?.query(`
+      INSERT INTO nourrain (name, description, owner_id, code)
+      VALUES (:name, :description, :userId, :nourrainCode)
+    `, {
+      replacements: { name, description, userId, nourrainCode },
+      type: QueryTypes.SELECT
+    });
+  }
+
+  static async join(nourrainId: number, userId: number): Promise<void> {
+    Nourrain.sequelize?.query(`
+      INSERT INTO nourrains_users (nourrain_id, user_id, waiting)
+      VALUES (:nourrainId, :userId, true)
+    `, {
+      replacements: { nourrainId, userId },
+      type: QueryTypes.SELECT
+    });
+  }
 }

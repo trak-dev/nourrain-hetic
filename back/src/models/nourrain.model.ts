@@ -8,13 +8,13 @@ interface NourrainAttributes {
     owner_id?: number;
     created_at?: Date;
     wallet: number;
+    code: string;
   }
   
   interface NourrainCreationAttributes extends Optional<NourrainAttributes, "id" | "description" | "owner_id" | "created_at"> {}
   
   // Sequelize Nourrain Model
   import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
-import { NourrainsUsers } from "./nourrains_users.model";
   
   export class Nourrain extends Model<NourrainAttributes, NourrainCreationAttributes> implements NourrainAttributes {
     public id!: number;
@@ -23,6 +23,7 @@ import { NourrainsUsers } from "./nourrains_users.model";
     public owner_id?: number;
     public created_at?: Date;
     public wallet!: number;
+    public code!: string;
   }
   
   // Sequelize Nourrain Model Initialization
@@ -52,6 +53,11 @@ import { NourrainsUsers } from "./nourrains_users.model";
           type: DataTypes.FLOAT,
           allowNull: false,
           defaultValue: 0,
+        },
+        code: {
+          type: DataTypes.STRING(6),
+          allowNull: false,
+          unique: true,
         },
       },
       {
