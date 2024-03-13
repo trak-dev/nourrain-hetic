@@ -29,7 +29,7 @@ export default class Nourrain_Core {
       SELECT n.id, n.description, n.name, n.wallet, n.owner_id
       FROM nourrain n
       LEFT OUTER JOIN nourrains_users nu ON n.id = nu.nourrain_id
-      WHERE n.id = :nourrainId AND nu.user_id = :userId
+      WHERE n.id = :nourrainId AND (nu.user_id = :userId OR n.owner_id = :userId)
     `, {
       replacements: { nourrainId, userId },
       type: QueryTypes.SELECT
